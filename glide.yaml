@@ -1,5 +1,4 @@
-package: github.com/ReSTARTR/mkmg
+package: github.com/ReSTARTR/qmkmk
 import:
-- package: github.com/mitchellh/cli
-- package: github.com/google/go-github/github
-- package: github.com/google/go-querystring
+  #- package: github.com/google/go-github/github
+  #- package: github.com/google/go-querystring

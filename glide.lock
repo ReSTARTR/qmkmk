@@ -1,12 +1,4 @@
-hash: 6ae93bd82298a1e43ffcc3e0298b837386f255c4aab09cc1d1c7f0e993fe3216
-updated: 2016-09-22T22:06:00.031394058+09:00
-imports:
-- name: github.com/google/go-github
-  version: 94a3cd9f531888fe4a03487276c0adb887428e77
-  subpackages:
-  - github
-- name: github.com/google/go-querystring
-  version: 9235644dd9e52eeae6fa48efd539fdc351a0af53
-- name: github.com/mitchellh/cli
-  version: fcf521421aa29bde1d93b6920dfce826d7932208
+hash: 74378a842a7272a981e6ef4a22f1053d24bc5853935b6004a77d487d1fa177e0
+updated: 2016-09-24T14:17:09.348389653+09:00
+imports: []
 devImports: []
