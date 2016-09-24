@@ -1,7 +1,7 @@
-mkmg
+qmkmk
 ====
 
-`mkmg `Helps you to manage keymaps of qmk\_firmware.
+`qmkmk` Helps you to manage keymaps of qmk\_firmware.
 
 Plan:
 
