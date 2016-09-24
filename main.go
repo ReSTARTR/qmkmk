@@ -91,6 +91,8 @@ func main() {
 			err = c.ListHex()
 		case "list-availables":
 			err = c.ListAvailables()
+		case "create":
+			err = c.Create()
 		case "get":
 			err = c.Get()
 		case "build":
