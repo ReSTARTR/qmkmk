@@ -3,6 +3,7 @@ mkmg
 
 `mkmg `Helps you to manage keymaps of qmk\_firmware.
 
+Plan:
 
 - Easy to follow `jackhumbert/qmk_firmware` repository
   - separate repositories of building tool and keymap.
@@ -16,37 +17,38 @@ mkmg
 Setup
 ----
 
-Before do this instruction, you must fork the repository of jackhumbert/qmk_firmware.
-
-- github.com/`$YOURNAME/qmk_firmware-ergodox-ez`
-
 ```
-$ git clone https://github.com/jackhumbert/qmk_firmware
+$ go install github.com/ReSTARTR/qmkmk
 ```
 
 Usage
 ----
 
+create your config file into `~/.config/qmkmk.json`.
+
+```json
+{
+  "keyboard": "ergodox",
+  "subproject": "ez",
+  "keymap": "restartr",
+  "owner": "ReSTARTR"
+}
+```
+
+and run with subcommand
+
 ```bash
-$ cd /path/to/qmk_firmware
+# clone qmk_firmware repository
+$ qmkmk init
 
-# Add your remote repository, and make your branch
-$ mkmg init remote add ${KEYMAP}
+# clone your keymap, and link from qmk_firmware's keymaps
+$ qmkmk get
 
-# Make dir of your keymap, and copy files from default.
-$ mkmg create ${KEYMAP}
+# build keymap
+$ qmkmk build
 
-# Open keymap.c in your favorite editor
-$ mkmg edit ${KEYMAP}
-
-# Build
-$ mkmg build ${KEYMAP}
-
-# Push to your repository, and run ci at werker.
-$mkmg push ${KEYMAP}
-
-# Update repository
-$ mkmg update 
+# install keymap into your keyboard
+$ qmkmk install
 ```
 
 Mechanism
@@ -68,45 +70,4 @@ directories
 `- ReSTARTR/
       `- qmk_firmware-ergodox-ez-restartr/
             `- keymap.c
-```
-
-commands
-
-```bash
-BASEPATH=$HOME/src/github.com #= GOPATH
-OWNER=ReSTARTR
-
-KEYBOARD=ergodox
-SUBPROJECT=ez
-KEYMAP=restartr
-BUILD_NAME=${KEYBOARD}-${SUBPROJECT}-${KEYMAP}  #= "ergodox-ez-restartr"
-KEYMAP_REPO=${OWNER}/qmk_firmware-${BUILD_NAME} #= "ReSTARTR/qmk_firmware-ergodox-ez-restartr"
-
-# qmk init remote add https://github.com/${KEYMAP_REPO}
-git clone https://github.com/jackhumbert/qmk_firmware \
-  ${BASEPATH}/jackhumbert/qmk_firmware
-git clone https://github.com/${KEYMAP_REPO} \
-  ${BASEPATH}/${KEYMAP_REPO}
-ln -s ${BASEPATH}/${KEYMAP_REPO} \
-  ${BASEPATH}/qmk_firmware/keyboards/${KEYBOARD}/keymaps/${KEYMAP}
-
-# qmk build
-cd ${BASEPATH}/jackhumbert/qmk_firmware
-make ${BUILD_NAME}
-
-# qmk teensy
-make teensy ${BUILD_NAME}
-
-# qmk push
-cd ${BASEPATH}/${KEYMAP_REPO}
-git checkout -b keymap/${BUILD_NAME}
-git commit -m "Update $(date)"
-git push origin
-
-# mkmg update 
-cd $BASEPATH/jackhumbert/qmk_firmware
-git pull origin master
-
-# and build agin
-make ${BUILD_NAME}
 ```
