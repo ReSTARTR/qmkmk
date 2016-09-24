@@ -49,6 +49,10 @@ $ qmkmk build
 
 # install keymap into your keyboard
 $ qmkmk install
+
+# push keymap to the repository.
+# Then, build and release your firmware by CI service.
+$ qmkmk push
 ```
 
 Mechanism
