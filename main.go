@@ -6,22 +6,29 @@ import (
 	"log"
 	"os"
 	"os/user"
-	"path/filepath"
 )
 
 const (
-	binName   = "qmkmk"
+	binName = "qmkmk"
+
 	toolOwner = "jackhumbert"
 	toolName  = "qmk_firmware"
 
-	fileExists         = "File exists"
+	fileExists         = "file exists"
 	alreadyExists      = "already exists and is not an empty directory."
 	repositoryNotFound = "Repository not found."
 )
 
 var (
 	version string
-	option  *Option
+	opt     *option
+
+	// flag valuess
+	owner      string
+	basepath   string
+	keyboard   string
+	subproject string
+	keymap     string
 )
 
 func init() {
@@ -30,33 +37,60 @@ func init() {
 		log.Fatal(err)
 	}
 
-	option = &Option{}
+	opt = NewOption(u.HomeDir)
 
-	flag.StringVar(&option.Owner, "owner", "ReSTARTR", "repository owner")
-	flag.StringVar(&option.Keyboard, "keyboard", "ergodox", "keyboard name")
-	flag.StringVar(&option.Subproject, "subproject", "ez", "subproject name")
-	flag.StringVar(&option.Keymap, "keymap", "restartr", "keymap name")
-	flag.StringVar(&option.Basepath, "basepath", filepath.Join(u.HomeDir, "src", "github.com"), "basepath")
+	flag.StringVar(&owner, "owner", "", "repository owner")
+	flag.StringVar(&basepath, "basepath", "", "basepath")
+	flag.StringVar(&keyboard, "keyboard", "", "keyboard name")
+	flag.StringVar(&subproject, "subproject", "", "subproject name")
+	flag.StringVar(&keymap, "keymap", "", "keymap name")
+}
+
+func loadFlags() {
+	flag.Parse()
+	if owner != "" {
+		opt.Owner = owner
+	}
+	if basepath != "" {
+		opt.Basepath = basepath
+	}
+	if keyboard != "" {
+		opt.Keyboard = keyboard
+	}
+	if subproject != "" {
+		opt.Subproject = subproject
+	}
+	if keymap != "" {
+		opt.Keymap.Name = keymap
+	}
 }
 
 func main() {
-	flag.Parse()
-	option.Resolve()
-
-	c := NewCommand(option)
+	loadFlags()
+	opt.Resolve()
+	c := NewCommand(opt)
 
 	var err error
 	var exitCode int
 
-	if len(os.Args) == 1 {
+	args := flag.Args()
+	if len(args) == 0 {
 		c.Help()
 		os.Exit(0)
 	}
 
-	for _, cmd := range os.Args[1:] {
+	for _, cmd := range args {
 		switch cmd {
 		case "init":
 			err = c.Init()
+		case "list":
+			err = c.List()
+		case "config":
+			fmt.Println(opt)
+		case "list-hex":
+			err = c.ListHex()
+		case "list-availables":
+			err = c.ListAvailables()
 		case "get":
 			err = c.Get()
 		case "build":
@@ -71,7 +105,7 @@ func main() {
 			os.Exit(1)
 		}
 		if err != nil {
-			fmt.Println("Failed to execute: %s\n", err.Error())
+			fmt.Printf("Failed to execute: %s\n", err.Error())
 		}
 		if exitCode != 0 {
 			os.Exit(exitCode)

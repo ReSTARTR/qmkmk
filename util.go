@@ -14,8 +14,8 @@ func command(args ...string) (*exec.Cmd, *bytes.Buffer) {
 	var buf bytes.Buffer
 	cmd := exec.Command(args[0], args[1:]...)
 	cmd.Stdin = os.Stdin
-	cmd.Stdout = &buf // os.Stdout // &buf
-	cmd.Stderr = &buf // os.Stderr // &buf
+	cmd.Stdout = os.Stdout // &buf
+	cmd.Stderr = &buf      // os.Stderr // &buf
 
 	return cmd, &buf
 }
