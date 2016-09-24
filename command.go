@@ -95,6 +95,7 @@ func (c Command) cloneTool() error {
 			return err
 		}
 	}
+	fmt.Printf("[INIT] cloned tool repository: %s", c.opt.ToolCloneTo)
 	return nil
 }
 
