@@ -20,7 +20,7 @@ const (
 )
 
 var (
-	version string
+	version = "0.0.1"
 	opt     *option
 
 	// flag valuess
