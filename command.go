@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"io"
@@ -9,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"text/template"
 )
 
 var (
@@ -118,7 +120,7 @@ func (c Command) createKeymap() error {
 	log.Println(buf)
 
 	// copy keymap files
-	if err := c.copyWerkerYaml(); err != nil {
+	if err := c.copyWerckerYaml(); err != nil {
 		return err
 	}
 
@@ -130,15 +132,25 @@ func (c Command) createKeymap() error {
 	return nil
 }
 
-func (c Command) copyWerkerYaml() error {
-	yamlPath := filepath.Join(c.opt.Keymap.CloneTo, "werker.yml")
+func (c Command) copyWerckerYaml() error {
+	yamlPath := filepath.Join(c.opt.Keymap.CloneTo, "wercker.yml")
 	f, err := os.Create(yamlPath)
 	if err != nil {
 		return err
 	}
 	defer f.Close()
 
-	fmt.Fprintf(f, yamlTemplate)
+	t := template.Must(template.New("wercker").Parse(werckerYaml))
+	var buf io.ReadWriter
+	buf = &bytes.Buffer{}
+	err = t.Execute(buf, c.opt)
+	if err != nil {
+		return err
+	}
+	body, err := ioutil.ReadAll(buf)
+	fmt.Println(string(body))
+
+	fmt.Fprintf(f, string(body))
 	log.Printf("[CREATE] touch %s\n", yamlPath)
 	return nil
 }
