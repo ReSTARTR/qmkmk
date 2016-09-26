@@ -1,6 +1,8 @@
 qmkmk
 ====
 
+[![wercker status](https://app.wercker.com/status/e0a6149454fdb9e8599650b1425645ed/s/master "wercker status")](https://app.wercker.com/project/byKey/e0a6149454fdb9e8599650b1425645ed)
+
 `qmkmk` Helps you to manage keymaps of qmk\_firmware.
 
 Plan:
