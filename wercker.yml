@@ -1,0 +1,48 @@
+box:
+  id: golang:1.7
+
+build:
+  steps:
+    - script:
+      name: test
+      code: >
+        uname -a &&
+        cat /etc/debian_version
+    - script:
+      name: env
+      code: >
+        export PATH=/usr/bin:/usr/local/go/bin:$PATH
+    - script:
+      name: install packages
+      code: >
+        apt-get update && /usr/bin/apt-get install -y ca-certificates git golang
+    - script:
+      name: init git-config
+      code: >
+        git config --global http.sslVerify false
+    - script:
+      name: glide
+      code: >
+        go get github.com/Masterminds/glide &&
+        go install github.com/Masterminds/glide
+    - script:
+      name: qmkmk
+      code: >
+        cd $WERCKER_SOURCE_DIR &&
+        go build -o ./qmkmk ./... &&
+        mv ./qmkmk $WERCKER_OUTPUT_DIR/qmkmk
+
+deploy:
+  steps:
+    - script:
+      name: put build binary to bintray
+      code: >
+        curl -T $WERCKER_SOURCE_DIR/qmkmk \
+          -u restartr:$BINTRAY_APIKEY \
+          https://api.bintray.com/content/restartr/generic/qmkmk/$WERCKER_GIT_BRANCH-$WERCKER_GIT_COMMIT/qmkmk
+    - script:
+        name: publish uploaded binary.
+        code: |
+          curl -X POST \
+            -u restartr:$BINTRAY_APIKEY \
+             https://api.bintray.com/content/restartr/generic/qmkmk/$WERCKER_GIT_BRANCH-$WERCKER_GIT_COMMIT/publish
